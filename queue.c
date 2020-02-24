@@ -9,6 +9,7 @@
  * Create empty queue.
  * Return NULL if could not allocate space.
  */
+
 queue_t *q_new()
 {
     queue_t *q = malloc(sizeof(queue_t));
