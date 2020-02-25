@@ -74,6 +74,7 @@ static bool do_source_cmd(int argc, char *argv[]);
 static bool do_log_cmd(int argc, char *argv[]);
 static bool do_time_cmd(int argc, char *argv[]);
 static bool do_comment_cmd(int argc, char *argv[]);
+static bool do_hello_cmd(int argc, char *argv[]);
 
 static void init_in();
 
@@ -99,6 +100,7 @@ void init_cmd()
     add_cmd("log", do_log_cmd, " file           | Copy output to file");
     add_cmd("time", do_time_cmd, " cmd arg ...    | Time command execution");
     add_cmd("#", do_comment_cmd, " ...            | Display comment");
+    add_cmd("hello", do_hello_cmd, "                |Print hello message");
     add_param("simulation", (int *) &simulation, "Start/Stop simulation mode",
               NULL);
     add_param("verbose", &verblevel, "Verbosity level", NULL);
@@ -432,6 +434,11 @@ static bool do_time_cmd(int argc, char *argv[])
     return ok;
 }
 
+static bool do_hello_cmd(int argc, char *argv[])
+{
+    return (bool) printf("Hello world\n");
+}
+
 /* Create new buffer for named file.
  * Name == NULL for stdin.
  * Return true if successful.
@@ -630,3 +637,5 @@ bool run_console(char *infile_name)
         cmd_select(0, NULL, NULL, NULL, NULL);
     return err_cnt == 0;
 }
+
+
