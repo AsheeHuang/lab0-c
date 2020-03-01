@@ -4,6 +4,7 @@
 
 #include "harness.h"
 #include "queue.h"
+#include "strnatcmp.h"
 
 #ifndef strlcpy
 #define strlcpy(dst, src, sz) snprintf((dst), (sz), "%s", (src))
@@ -171,4 +172,39 @@ void q_sort(queue_t *q)
 {
     /* TODO: You need to write the code for this function */
     /* TODO: Remove the above comment when you are about to implement. */
+    q->head = sort(q->head);
+}
+
+list_ele_t *sort(list_ele_t *start)
+{
+    if (!start || !start->next)
+        return start;
+    list_ele_t *left = start;
+    list_ele_t *right = left->next;
+    left->next = NULL;
+
+    left = sort(left);
+    right = sort(right);
+
+
+    for (list_ele_t *merge = NULL; left || right;) {
+        if (!right || (left && strnatcmp(left->value, right->value) == -1)) {
+            if (!merge) {
+                start = merge = left;
+            } else {
+                merge->next = left;
+                merge = merge->next;
+            }
+            left = left->next;
+        } else {
+            if (!merge) {
+                start = merge = right;
+            } else {
+                merge->next = right;
+                merge = merge->next;
+            }
+            right = right->next;
+        }
+    }
+    return start;
 }
