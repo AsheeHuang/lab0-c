@@ -191,36 +191,37 @@ void q_sort(queue_t *q)
         q->head = sort(q->head);
 }
 
-list_ele_t *sort(list_ele_t *start)
+list_ele_t *sort(list_ele_t *head)
 {
-    if (!start || !start->next)
-        return start;
-    list_ele_t *left = start;
-    list_ele_t *right = left->next;
-    left->next = NULL;
-
-    left = sort(left);
-    right = sort(right);
-
-
-    for (list_ele_t *merge = NULL; left || right;) {
-        if (!right || (left && strnatcmp(left->value, right->value) == -1)) {
-            if (!merge) {
-                start = merge = left;
-            } else {
-                merge->next = left;
-                merge = merge->next;
-            }
-            left = left->next;
-        } else {
-            if (!merge) {
-                start = merge = right;
-            } else {
-                merge->next = right;
-                merge = merge->next;
-            }
-            right = right->next;
-        }
+    if (!head || !head->next)
+        return head;
+    list_ele_t *slow = head, *fast = head, *prev, *left, *right;
+    while (fast && fast->next) {
+        prev = slow;
+        slow = slow->next;
+        fast = fast->next->next;
     }
-    return start;
+    prev->next = NULL;
+    left = sort(head);
+    right = sort(slow);
+    return mergeTwoLists(left, right);
+}
+list_ele_t *mergeTwoLists(list_ele_t *l1, list_ele_t *l2)
+{
+    list_ele_t dummyHead = {0, NULL}, *prev = &dummyHead;
+    while (l1 && l2) {
+        if (strnatcmp(l1->value, l2->value) == -1) {
+            prev->next = l1;
+            l1 = l1->next;
+        } else {
+            prev->next = l2;
+            l2 = l2->next;
+        }
+        prev = prev->next;
+    }
+    if (l1)
+        prev->next = l1;
+    else
+        prev->next = l2;
+    return dummyHead.next;
 }
